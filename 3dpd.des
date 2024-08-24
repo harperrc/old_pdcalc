@@ -1,0 +1,5 @@
+set xlabel "gr" 
+set ylabel "hob" 
+set zlabel "pd" 
+set xyplane 0
+spl 'pdcalc.dat' u 6:7:5

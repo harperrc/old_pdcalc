@@ -1,0 +1,15 @@
+ &conlst
+ &end
+ &simlst
+  cep=1.0,
+  r95=5.0,
+  jti='q',
+  jti='l',
+  jti='z',
+  jti='p',
+  ivns=1,
+  ivne=1,
+  ivnd=1,
+  gname='../gendat.dat',
+  gname='gd.dat'
+ &end

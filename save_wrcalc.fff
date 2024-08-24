@@ -1,0 +1,224 @@
+      subroutine wrcalc(yld,hob1,iv,jjt,kf,dsig,wr,ierr)
+c
+c  compute weapon radius for p (overpressure) or q (dynamic pressure)
+c  targets
+c
+c  inputs
+c        yld   weapon yield (kt)
+c        hob1  height of burst (feet)
+c        iv    vulnerability number
+c        jjt   target type 
+c              1-p
+c              2-q
+c        kf    yield adjustment factor (0-9)
+c        dsig  damage sigma
+c
+c  outputs:
+c        wr    weapon radius (feet)
+c        ierr  error status flag
+      include "real8.h"
+      include "const.h"
+      include "files.h"
+      dimension wp(8,2,10),wq(8,10),tvnp(9),tvnq(9),wp1(88),wp2(72),
+     *  wq1(72),wq2(8)
+c
+      equivalence (wp(1),wp1(1)),(wp(89),wp2(1)),(wq(1),wq1(1)),
+     *  (wq(72),wq2(1))
+c
+c  coefficients for 7th order polynomial approximation for weapon
+c  radius coputations
+c
+      data wp1/8.206936,-0.09866222,-0.004270532,0.00044673610,4*0.,
+     *  8.26343,-0.12109524,0.00127466,-0.9206549e-5,4*0.,
+     *  8.29123,-0.1132939,0.3119908e-3,5*0.,
+     *  8.29959,-0.1104334,-0.48494085e-3,0.658301e-4,-0.91680378e-6,
+     *  3*0.,
+     *  8.395223,-0.14717856,0.01274489,-0.002063277,0.1667591e-3,
+     *  -0.689342e-5,0.1423714e-6,-0.11675015e-8,
+     *  8.395223,-0.14717856,0.01274489,-0.002063277,0.1667591e-3,
+     *  -0.689342e-5,0.1423714e-6,-0.11675015e-8,
+     *  8.41958,-0.09982782,-0.0041872797,0.5449084e-3,-0.3758352e-4,
+     *  0.1400969e-5,-0.2107989e-7,0.,  
+     *  8.41958,-0.09982782,-0.0041872797,0.5449084e-3,-0.3758352e-4,
+     *  0.1400969e-5,-0.2107989e-7,0.,  
+     *  8.499489,-0.1096521,-0.003444575,0.7261706e-3,-0.710905e-4,
+     *  0.3319013e-5,-0.5668505e-7,0.,
+     *  8.499489,-0.1096521,-0.003444575,0.7261706e-3,-0.710905e-4,
+     *  0.3319013e-5,-0.5668505e-7,0.,
+     *  8.525985,-0.06312055,-0.02562219,0.005426447,-0.5926339e-3,
+     *  0.3485504e-4,-0.1022865e-5,0.114432e-7/
+c
+      data wp2/8.525985,-0.06312055,-0.02562219,0.005426447,
+     *  -0.5926339e-3,0.3485504e-4,-0.1022865e-5,0.114432e-7,
+     *  8.586222,-0.1002711,-0.009917176,0.00260232,-0.3602822e-3,
+     *  0.2802515e-4,-0.1082636e-5,0.1541557e-7,
+     *  8.586222,-0.1002711,-0.009917176,0.00260232,-0.3602822e-3,
+     *  0.2802515e-4,-0.1082636e-5,0.1541557e-7,
+     *  8.655962,-0.1367989,0.01426281,-0.004092999,0.5028125e-3,
+     *  -0.2571224e-4,0.4379003e-6,0.,
+     *  8.655962,-0.1367989,0.01426281,-0.004092999,0.5028125e-3,
+     *  -0.2571224e-4,0.4379003e-6,0.,
+     *  8.681285,-0.1143286,-0.001788869,0.1595909e-3,4*0.,
+     *  12.51342,-1.516344,0.1769944,-0.008900835,0.1400736e-3,3*0.,
+     *  8.719654,-0.1215853,0.001203604,-0.1386328e-3,4*0.,
+     *  13.47289,-1.971983,0.2547267,-0.014325115,0.2640371e-3,3*0./
+c
+      data wq1/8.315159,-0.106087,0.5224e-3,-0.313e-3,0.32265e-4,
+     *  -0.123227e-5,0.196707e-7,-0.105880e-9,
+     *  8.376082,-0.104295,-0.0012014,-0.391136e-4,0.128757e-4,
+     *  -0.497579e-6,0.577257e-8,0.,
+     *  8.42024,-0.109473,0.001462288,-0.596972e-3,0.6697002e-4,
+     *  -0.3014946e-5,0.6188228e-7,-0.4866633e-9,
+     *  8.485315,-0.103139,-0.0034114,0.3087e-3,-0.107267e-4,
+     *  0.315662e-6,-0.556646e-8,0.,
+     *  8.576,-0.103989,-0.0065788,0.0012382,-0.1333e-3,0.801387e-5,
+     *  -0.234684e-6,0.251295e-8,
+     *  8.6435,-0.1110564,-0.0041904,0.6644e-3,-0.776848e-4,
+     *  0.598695e-5,-0.227079e-6,0.300626e-8,
+     *  8.686697,-0.116482,0.3634e-3,-0.6169e-3,0.857541e-4,
+     *  -0.407263e-5,0.566502e-7,0.,
+     *  8.70745,-0.117550,0.0023483,-0.0013054,0.1909e-3,-0.1152e-4,
+     *  0.283079e-6,-0.244704e-8,
+     *  8.736328,-0.1151805,0.0021175,-0.0015218,0.2654e-3,-0.19675e-4,
+     *  0.618015e-6,-0.720562e-8/
+c
+      data wq2/8.793042,-0.1154885,0.1871e-3,-0.0011008,0.2357e-3,
+     *  -0.201562e-4,0.69752e-6,-0.874866e-8/
+c
+c  yield limits for p targets
+c
+      data tvnp/54.,51.,34.,30.,27.,27.,22.,21.,20./
+c
+c  yield limits for q targets
+c
+      data tvnq/35.,35.,35.,31.,28.,26.,25.,23.,22./
+c
+      ierr=0
+c
+      if(kf.ge.10) then
+         ierr=6
+         return
+      endif
+c
+      jt=jjt
+      vn=iv
+      fk=kf
+c
+      yldcu=yld**third
+      yldic=one/yldcu
+c
+      shob=hob1*yldic
+      ds2=one/(one-dsig*dsig)
+c
+      fk10=fk*0.10
+c
+      sil=shob/100.0+1.0001
+      il=sil
+      il=max(1,il)
+c
+      if(il.ge.10) then
+         ierr=3
+         return
+      endif
+c
+      fac=(il-1)*100.0
+      fac=(shob-fac)/100.0
+c
+c  check for p or q
+c
+      if(jt.eq.1)goto 240
+c
+c  calculate the adjusted vn for q type targets
+c
+      r2=3.0
+c
+ 10   r1=one-fk10*(one-2.7144176*yldic*(r2**third))
+      abdif=r1-r2
+      r2=r1
+      abdif=abs(abdif)
+      if(abdif.gt.0.001)goto 10
+c
+      avn=vn+2.742*log(r2)
+      ax=1.10
+c
+c  compute wr for q type targets
+c
+      if(avn.gt.tvnq(il)) then
+         ierr=2
+         return
+      endif
+c
+      swrl=wq(1,il)+avn*(wq(2,il)+avn*(wq(3,il)+avn*(wq(4,il)+
+     *  avn*(wq(5,il)+avn*(wq(6,il)+avn*(wq(7,il)+avn*wq(8,il)))))))
+      ih=il+1
+      swrh=wq(1,ih)+avn*(wq(2,ih)+avn*(wq(3,ih)+avn*(wq(4,ih)+
+     *  avn*(wq(5,ih)+avn*(wq(6,ih)+avn*(wq(7,ih)+avn*wq(8,ih)))))))
+      goto 300
+c
+c  calculate the adjusted vn for p type targets
+c
+ 240  r2=2.0
+c
+ 11   r1=one-fk10*(one-2.7144176*yldic*(r2**0.50))
+      abdif=r1-r2
+      r2=r1
+      abdif=abs(abdif)
+      if(abdif.gt.0.001)goto 11
+c
+      avn=vn+5.485*log(r2)
+      ax=1.04
+c
+c  compute wr for p type targets
+c
+      if(avn.gt.tvnp(il)) then
+         ierr=2
+         return
+      endif
+c
+      if(avn.lt.36.0)goto 260
+c
+c  functional fit to high vn range
+c
+      shck=-9.0*avn+560.0
+      if(shob.gt.shck) then
+         ierr=2
+         return
+      endif
+c
+c  calculate wr using the AIM fit
+c
+      vx=(avn-46.0)/10.0
+      wo=88.0-vx*(53.0-vx*(21.0-vx*8.0))
+      if(shob.ne.zero)goto 259
+c
+      wr=wo*yldcu*ds2/ax
+      goto 400
+c
+ 259  hm=70.0-5.0*vx*(7.0-vx)
+      con=1.6+0.20*vx
+      hx=shob/hm
+      dw=hm-wo
+      wr=wo+dw*hx*(2.0-hx-con*(one-hx)**2)
+      wr=wr*yldcu*ds2/ax
+      goto 400
+c
+c  use the table data
+c
+ 260  j=1
+      if(avn.gt.7.5)j=2
+      swrl=wp(1,j,il)+avn*(wp(2,j,il)+avn*(wp(3,j,il)+avn*(wp(4,j,il)+
+     *  avn*(wp(5,j,il)+avn*(wp(6,j,il)+avn*(wp(7,j,il)+avn*wp(8,j,il))
+     *  )))))
+      ih=il+1
+      swrh=wp(1,j,ih)+avn*(wp(2,j,ih)+avn*(wp(3,j,ih)+avn*(wp(4,j,ih)+
+     *  avn*(wp(5,j,ih)+avn*(wp(6,j,ih)+avn*(wp(7,j,ih)+avn*wp(8,j,ih))
+     *  )))))
+c
+ 300  swrl=exp(swrl)
+      swrh=exp(swrh)
+      wr=(swrl+fac*(swrh-swrl))*yldcu*ds2/ax
+c
+ 400  if(wr.lt.zero)wr=zero
+c
+      return
+      end

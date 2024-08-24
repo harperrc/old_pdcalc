@@ -1,0 +1,2 @@
+      common /basicd/ iseed
+c
