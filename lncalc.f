@@ -124,7 +124,7 @@ c
          if(bminsa.le.zero)goto 110
       endif
 c
- 90   wrnx=wrn*ex
+      wrnx=wrn*ex
       betai=one/beta
 c
       do 100 n=1,5

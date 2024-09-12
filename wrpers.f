@@ -153,7 +153,12 @@ c
      *  0.0,-0.0006,-0.00065/
 c
       ierr=0
-c
+
+c  added to quite gfortran 
+
+      if (iv.lt.0)write(6,*)'********** iv < 0 ',iv
+      if (jjt.lt.0)write(6,*)'********** jjt < 0 ',jjt
+
       if(kf.gt.16) then
          ierr=8
          return

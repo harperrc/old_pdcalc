@@ -1,2 +1,1 @@
-      implicit real*8 (a-h,o-z)
-c
+      implicit double precision (a-h,o-z)

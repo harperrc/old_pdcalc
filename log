@@ -1,0 +1,33 @@
+gfortran  -Wall -Wunused-parameter -fno-range-check -std=legacy -ffpe-trap=zero,denormal,invalid,overflow -C -g -c main.for
+gfortran  -Wall -Wunused-parameter -fno-range-check -std=legacy -ffpe-trap=zero,denormal,invalid,overflow -C -g -c acon.f
+gfortran  -Wall -Wunused-parameter -fno-range-check -std=legacy -ffpe-trap=zero,denormal,invalid,overflow -C -g -c errmsg.f
+gfortran  -Wall -Wunused-parameter -fno-range-check -std=legacy -ffpe-trap=zero,denormal,invalid,overflow -C -g -c etcalc.f
+gfortran  -Wall -Wunused-parameter -fno-range-check -std=legacy -ffpe-trap=zero,denormal,invalid,overflow -C -g -c intgf.f
+gfortran  -Wall -Wunused-parameter -fno-range-check -std=legacy -ffpe-trap=zero,denormal,invalid,overflow -C -g -c lncalc.f
+lncalc.f:127:3:
+
+  127 |  90   wrnx=wrn*ex
+      |   1
+Warning: Label 90 at (1) defined but not used [-Wunused-label]
+gfortran  -Wall -Wunused-parameter -fno-range-check -std=legacy -ffpe-trap=zero,denormal,invalid,overflow -C -g -c pdcalc.f
+gfortran  -Wall -Wunused-parameter -fno-range-check -std=legacy -ffpe-trap=zero,denormal,invalid,overflow -C -g -c ranf.f
+gfortran  -Wall -Wunused-parameter -fno-range-check -std=legacy -ffpe-trap=zero,denormal,invalid,overflow -C -g -c wrcalc.f
+wrcalc.f:195:9:
+
+  195 |       il=sil
+      |         1
+Warning: Possible change of value in conversion from REAL(8) to INTEGER(4) at (1) [-Wconversion]
+gfortran  -Wall -Wunused-parameter -fno-range-check -std=legacy -ffpe-trap=zero,denormal,invalid,overflow -C -g -c wrclcy.f
+gfortran  -Wall -Wunused-parameter -fno-range-check -std=legacy -ffpe-trap=zero,denormal,invalid,overflow -C -g -c wrcrtr.f
+gfortran  -Wall -Wunused-parameter -fno-range-check -std=legacy -ffpe-trap=zero,denormal,invalid,overflow -C -g -c wrpers.f
+wrpers.f:1:35:
+
+    1 |       subroutine wrpers(yld,hob1,iv,jjt,kf,dsig,wr,ierr)
+      |                                   1
+Warning: Unused dummy argument ‘iv’ at (1) [-Wunused-dummy-argument]
+wrpers.f:1:39:
+
+    1 |       subroutine wrpers(yld,hob1,iv,jjt,kf,dsig,wr,ierr)
+      |                                       1
+Warning: Unused dummy argument ‘jjt’ at (1) [-Wunused-dummy-argument]
+gfortran  -Wall -Wunused-parameter -fno-range-check -std=legacy -ffpe-trap=zero,denormal,invalid,overflow -C -g -o main main.o acon.o errmsg.o etcalc.o intgf.o lncalc.o pdcalc.o ranf.o wrcalc.o wrclcy.o wrcrtr.o wrpers.o 

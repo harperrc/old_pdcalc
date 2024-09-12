@@ -85,8 +85,6 @@ c
 c
       if(mode.eq.2) then
          goto 333
-      else
-cc         write(2,25)
       endif
 c
  111  read(1,*,end=222)grn,hob,yld
@@ -171,12 +169,6 @@ c
 c
       stop
 c
- 20   format(3(1x,f12.3),3(1x,f12.7))
- 25   format('4',/,
-     *  'gr (scaled) km',/,
-     *  'wr',/,
-     *  'pd',/,
-     *  'pd(cep)')
  30   format(i5,1x,6(1x,f15.8))
  40   format(3f10.3,i5,a,a)
  50   format(3(1x,f10.3),1x,i5,1x,a,1x,a,2(1x,f12.5))
