@@ -1,5 +1,3 @@
- &conlst
- &end
  &simlst
   cep=1.0,
   r95=5.0,
@@ -8,7 +6,7 @@
   jti='z',
   jti='p',
   ivns=1,
-  ivne=1,
+  ivne=23,
   ivnd=1,
   gname='../gendat.dat',
   gname='gd.dat'

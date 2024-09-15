@@ -41,6 +41,7 @@ c
       include "real8.h"
       include "const.h"
       include "files.h"
+
       dimension s(6),t(6),nm(16),li(39),lk(40),a(32),b(32),ch(562),
      *  ch1(64),ch65(60),ch125(53),ch178(69),ch247(70),ch317(72),
      *  ch389(48),ch437(42),ch479(42),ch521(42)
@@ -154,7 +155,7 @@ c
 c
       ierr=0
 
-c  added to quite gfortran 
+c  added to quiet gfortran 
 
       if (iv.lt.0)write(6,*)'********** iv < 0 ',iv
       if (jjt.lt.0)write(6,*)'********** jjt < 0 ',jjt
@@ -168,12 +169,12 @@ c
       shob=hob1/yldcu
 c
       wr=zero
-      dsig=0.30
+      dsig=0.30d0
 c
       xl=log10(yld)
 c
-      x=(xl+one)/2.65052-one
-      y=shob/500.0-one
+      x=(xl+one)/2.65052d0-one
+      y=shob/500.0d0-one
 c
       if(kf.eq.15)y=shob/200.0-one
 c
@@ -194,78 +195,78 @@ c
      *  113,115,116),kf
 c
  101  ks=2
-      if(shob.gt.700.0)ks=4
-      if(yld.lt.10.0)goto 142
+      if(shob.gt.700.0d0)ks=4
+      if(yld.lt.10.0d0)goto 142
       n=n+1
-      if(shob.ge.800.0)n=n+1
+      if(shob.ge.800.0d0)n=n+1
       goto 142
 c
  102  ks=6
-      if(yld.gt.10.0)n=n+1
+      if(yld.gt.10.0d0)n=n+1
       goto 141
 c
- 103  if(yld.le.10.0)goto 200
+ 103  if(yld.le.10.0d0)goto 200
       n=n+1
       if(shob.gt.700.0)n=n+1
       goto 200
 c
  104  ks=8
-      if(yld.gt.10.0)n=n+1
+      if(yld.gt.10.0d0)n=n+1
       goto 143
 c
  105  ks=9
-      if(shob.gt.750.0)ks=10
-      if(shob.le.700.0)goto 144
+      if(shob.gt.750.0d0)ks=10
+      if(shob.le.700.0d0)goto 144
       n=n+1
-      if(yld.gt.40.0)n=n+1
+      if(yld.gt.40.0d0)n=n+1
       goto 144
 c
  106  ks=11
-      if(yld.gt.10.0)n=n+1
+      if(yld.gt.10.0d0)n=n+1
       goto 144
 c
  107  ks=12
-      if(shob.gt.300.0)ks=13
-      if(yld.gt.100.0)n=n+1
-      if(yld.ge.2000.0)n=n+1
+      if(shob.gt.300.0d0)ks=13
+      if(yld.gt.100.0d0)n=n+1
+      if(yld.ge.2000.0d0)n=n+1
       goto 144
 c
  108  ks=14
-      if(shob.gt.200.0)ks=15
-      if(shob.gt.600.0)ks=16
-      if(shob.lt.700.0)goto 144
+      if(shob.gt.200.0d0)ks=15
+      if(shob.gt.600.0d0)ks=16
+      if(shob.lt.700.0d0)goto 144
       n=n+1
       if(yld.gt.200.0)n=n+1
       goto 144
 c
  109  ks=17
-      if(shob.gt.200.0)ks=18
-      if(shob.gt.450.0)ks=19
-      if(shob.gt.650.0)ks=20
-      if(shob.lt.500.0)goto 144
+      if(shob.gt.200.0d0)ks=18
+      if(shob.gt.450.0d0)ks=19
+      if(shob.gt.650.0d0)ks=20
+      if(shob.lt.500.0d0)goto 144
       n=n+1
-      chk=0.53-0.50*y
-      if(yld.le.700.0.and.x.lt.chk)goto 144
-      if(shob.gt.800.0)return
+      chk=0.53d0-0.50d0*y
+      if(yld.le.700.0d0.and.x.lt.chk)goto 144
+      if(shob.gt.800.0d0)return
       n=n+1
       goto 144
 c
- 110  dsig=0.40
+ 110  dsig=0.40d0
       goto 200
 c
  111  ks=22
-      if(shob.gt.750.0)ks=25
-      if(yld.gt.200.0)goto 121
-      if(shob.ge.800.0)n=n+1
+      if(shob.gt.750.0d0)ks=25
+      if(yld.gt.200.0d0)goto 121
+      if(shob.ge.800.0d0)n=n+1
       goto 141
 c
- 121  if(shob.lt.900.0)goto 141
+ 121  if(shob.lt.900.0d0)goto 141
       n=n+2
-      if(yld.ge.1000.0)n=n+1
+      if(yld.ge.1000.0d0)n=n+1
       goto 141
 c
  112  ks=28
-      if(yld.gt.4.0)n=n+1
+      if(yld.gt.4.0d0)n=n+1
       goto 141
 c
  113  if(yld.ge.400.0)goto 123

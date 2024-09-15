@@ -1,0 +1,6 @@
+set xyplane 0
+set grid z vertical
+
+set title 'VN = 1'
+spl 'pdcalc.dat' u ($1 == 1 ? $2 : 1/0):7:4 @ml1 tit ''
+pause -1

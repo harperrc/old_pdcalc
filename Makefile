@@ -13,15 +13,18 @@ OBJECTS=	main.o \
 		wrcrtr.o \
 		wrpers.o
 
+
 F77=	pgf77
 FLAGS=	-Wall -Msave -Ktrap=divz,denorm,fp,ovf -C -g
 LIBS=	
 INCLUDES=	
 
 F77=	gfortran
-FLAGS=	-Wall -Wunused-parameter -fno-range-check -std=legacy -ffpe-trap=zero,denormal,invalid,overflow -C -g
+FLAGS=	-O3 -Wall -Wunused-parameter -fno-range-check -std=legacy -ffpe-trap=zero,denormal,invalid,overflow -C -g
+FLAGS=	-O3 -Wall -Wunused-parameter -fno-range-check -std=legacy -ffpe-trap=zero,denormal,invalid,overflow,underflow -C -g
 LIBS=	
 INCLUDES=	
+
 
 $(PROGRAM):	$(OBJECTS)
 	$(F77) $(INCLUDES) $(FLAGS) -o $(PROGRAM) $(OBJECTS) $(LIBS)
@@ -37,7 +40,10 @@ main.o:	main.for\
 	wrcalc.f \
 	wrclcy.f \
 	wrcrtr.f \
-	wrpers.f
+	wrpers.f \
+	drv1.x \
+	drv2.x \
+	drv3.x
 	$(F77) $(INCLUDES) $(FLAGS) -c $<
 
 acon.o:	acon.f

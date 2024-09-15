@@ -1,7 +1,11 @@
       subroutine errmsg(ierr,iv,jt,kf,yld,cep,hob1,r95,d,wr,pod,iflg)
+
       include "real8.h"
       include "const.h"
       include "files.h"
+
+      if (ldbg.lt.0) return
+
       if(iflg.eq.5.or.iflg.eq.6)d=zero
       if(iflg.ne.9.and.iflg.ne.10)wr=zero
       if(iflg.ne.5.and.iflg.ne.6)pod=zero

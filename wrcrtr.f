@@ -14,13 +14,18 @@ c        wr     weapon radius (feet)
 c
       include "real8.h"
       include "const.h"
-      soilcf=61.0
-      if(jts.eq.4.and.kf.eq.9.and.crf.gt.zero)soilcf=82.0
-      if(jts.eq.5.and.crf.gt.zero)soilcf=82.0
-      if(jts.eq.4.and.kf.lt.9)soilcf=58.0
+
+      soilcf=61.0d0
+
+      if(jts.eq.4.and.kf.eq.9.and.crf.gt.zero)soilcf=82.0d0
+
+      if(jts.eq.5.and.crf.gt.zero)soilcf=82.0d0
+
+      if(jts.eq.4.and.kf.lt.9)soilcf=58.0d0
+
       if(crf.lt.zero)crf=-crf
-c
-      wr=1.1*crf*soilcf*yld**0.30
-c
+
+      wr=1.1*crf*soilcf*yld**0.30d0
+
       return
       end

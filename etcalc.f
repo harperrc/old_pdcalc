@@ -23,46 +23,47 @@ c
       include "real8.h"
       include "const.h"
       include "files.h"
+
       dimension inw(3,10,6),crw(10,6),dswv(10,6),vnw(10,6),
      *  inl(6,10,6),crl(2,10,6),dslv(2,10,6),vnl(10,6)
-c
+
       dd(b,c)=abs(b)/(1.414213562*c)
-c
+
       er(b,c)=one+dd(b,c)*(w1+dd(b,c)*(w2+dd(b,c)*(w3+dd(b,c)*
      *  (w4+dd(b,c)*(w5+dd(b,c)*w6)))))
-c
+
       erfp(b,c)=(one-(one/er(b,c))**16)*abs(b)/(2.0*b)
-c
+
       p(b,c,d,e,f,g,h,a)=(erfp(d,e)-erfp(b,c))*(erfp(h,a)-erfp(f,g))
-c
+
       acep(a,b)=sqrt(cep*cep+(1.1774*a*b)**2)/1.1774
-c
+
       data inw/
-c
+
 c  bridges
-c
+
      *  0,0,0,  0,0,0,  0,0,0, 31,1,0, 25,2,6, 20,2,6, 18,2,6, 25,2,8,
      * 15,2,9, 16,2,8,  0,0,0, 18,2,9, 17,2,9, 16,2,8, 15,2,9, 17,2,8,
      * 14,2,9, 16,2,9, 16,2,9,  0,0,0, 
      * 18,2,9, 17,2,9, 16,2,8, 15,2,9, 16,2,9, 17,2,8, 17,2,8, 9*0,
-c
+
 c  dams (upstream vntk)
-c
+
      * 41,1,0, 38,1,0, 38,1,0, 42,1,0, 39,1,0, 39,1,0, 39,1,0, 35,1,0,
      * 35,1,0,  0,0,0,
-c
+
 c  locks
-c
+
      *  30*0,
-c
+
 c  special case
-c
+
      *  0,0,0, 13,2,5, 11,2,4, 21*0/
 c
       data crw/
-c
+
 c  bridges
-c
+
      *  1.5,2.0,1.5,27*0.,
 c
 c  dams (upstream)

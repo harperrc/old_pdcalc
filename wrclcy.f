@@ -14,6 +14,7 @@ c
       include "real8.h"
       include "const.h"
       include "files.h"
+
       dimension ycof(17),yexp(17)
 c
       data ycof/28.,89.,131.,136.,140.,141.,146.,148.,155.,185.,

@@ -1,1 +1,9 @@
-this is the old pdcalc code
+main <drivernumber
+
+e.g. to run the code reading the gd.dat file
+main 1
+
+main 2 exercises the code across some vn, kf
+
+main 3 reads a reformatted version of your OPEN-RISOP file (my name is good)
+and computes pod with a yield of 300kt and a cep or 3 nmi

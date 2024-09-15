@@ -1,0 +1,10 @@
+#
+valgrind \
+        -v \
+        --leak-check=full \
+        --num-callers=24  \
+        --tool=memcheck \
+        --show-leak-kinds=all \
+        --main-stacksize=1400000000 \
+        --log-file=log \
+        main

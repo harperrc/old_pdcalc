@@ -1,0 +1,11 @@
+set view 70,17
+set xyplane 0
+set xrange [-190:-40]
+set yrange [10:80]
+set xlabel "Longitude (Deg)"
+set ylabel "Latitude (Deg)"
+set zlabel "P_o_d" rotate by 90
+set grid z vertical
+set title "OPEN-RISOP\ncep = 3 Nmi\n300Kt"
+spl 'lout.out' u 1:2:8 @pt21 tit '',\
+    'mappm.line' w l lt - 1 tit ''

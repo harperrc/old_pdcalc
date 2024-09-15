@@ -45,8 +45,8 @@ c
       sqr2pi     = sqrt(2.0d0 * pi)
       spdlig     = 2.99792458d8
 c
-      read(lin,conlst)
-      write(lout,conlst)
+cccc      read(lin,conlst)
+cccc      write(lout,conlst)
 c
       twore      = 2.0d0 *re
       re2        = re *re

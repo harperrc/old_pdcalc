@@ -13,9 +13,12 @@ c
          call drv1
       else if (id.eq.2) then
          call drv2
+      else if (id.eq.3) then
+         call drv3
       endif
 
       stop
       end
       include 'drv1.x'
       include 'drv2.x'
+      include 'drv3.x'

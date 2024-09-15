@@ -22,30 +22,32 @@ c
       logical cross
       include "const.h"
       include "files.h"
+
       dimension w(5),zp(5)
-c
-      data w/0.0666713443,0.1494513492,0.2190863625,0.2692667193,
-     *  0.2955242247/
-c
-      data zp/0.9739065285,0.8650633667,0.6794095683,0.4333953941,
-     *  0.1488743390/
-c
+
+      data w/0.0666713443d0,0.1494513492d0,0.2190863625d0,
+     *       0.2692667193d0,0.2955242247d0/
+
+      data zp/0.9739065285d0,0.8650633667d0,0.6794095683d0,
+     *        0.4333953941d0,0.1488743390d0/
+
       ierr=0
-c
-      if(iflg.eq.6)d=zero
-      d=d*cnm2ft
-      itch=0
-c
-      rr5=r95*cnm2ft
-c
-      adcep=sqrt(cep*cep+0.231*rr5*rr5)
+
+      if(iflg.eq.6)d = zero
+
+      d    = d * cnm2ft
+      itch = 0
+
+      rr5 = r95 * cnm2ft
+
+      adcep = sqrt(cep * cep + 0.231d0 * rr5 * rr5)
 c
       if(wr.le.0.001)goto 40
-c
+
 c  compute beta-factor used in computing z
-c
- 10   ex=one-dsig*dsig
-      beta=sqrt(-log(ex))
+
+ 10   ex   = one - dsig * dsig
+      beta = sqrt(-log(ex))
 c
       if(adcep.gt.zero)goto 50
 c
@@ -124,8 +126,8 @@ c
          if(bminsa.le.zero)goto 110
       endif
 c
-      wrnx=wrn*ex
-      betai=one/beta
+      wrnx  = wrn * ex
+      betai = one / beta
 c
       do 100 n=1,5
 c

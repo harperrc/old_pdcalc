@@ -5,6 +5,8 @@ c
       include "real8.h"
       real*4 ran
       include "basicd.h"
+
       ranf = ran(iseed) 
       return
+
       end   

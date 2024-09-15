@@ -19,6 +19,7 @@ c        ierr  error status flag
       include "real8.h"
       include "const.h"
       include "files.h"
+      include 'cdkwr.h'
 
 c  increased dim of wq1 from 72 to 80 and dropped wq2 array
 c  wq2 incorporated in wq1 array as modern compilers dont have limit on # of continuations 
@@ -171,7 +172,7 @@ c
       shob=hob1*yldic
       ds2=one/(one-dsig*dsig)
 c
-      fk10=fk*0.10
+      fk10=fk * 0.10
 c
       sil=shob/100.0+1.0001
       il=int(sil)
@@ -215,32 +216,33 @@ c
       swrh=wq(1,ih)+avn*(wq(2,ih)+avn*(wq(3,ih)+avn*(wq(4,ih)+
      *  avn*(wq(5,ih)+avn*(wq(6,ih)+avn*(wq(7,ih)+avn*wq(8,ih)))))))
       goto 300
-c
+
 c  calculate the adjusted vn for p type targets
-c
- 240  r2=2.0
-c
- 11   r1=one-fk10*(one-2.7144176*yldic*(r2**0.50))
-      abdif=r1-r2
-      r2=r1
-      abdif=abs(abdif)
+
+ 240  r2 = 2.0
+
+ 11   r1    = one - fk10 * (one - 2.7144176d0 * yldic * (r2**0.50d0))
+      abdif = r1 - r2
+      r2    = r1
+      abdif = abs(abdif)
       if(abdif.gt.0.001)goto 11
-c
-      avn=vn+5.485*log(r2)
-      ax=1.04
-c
+
+      avn = vn + 5.485d0 * log(r2)
+      ax  = 1.04
+
 c  compute wr for p type targets
-c
+
       if(avn.gt.tvnp(il)) then
          ierr=2
          return
       endif
-c
+
       if(avn.lt.36.0)goto 260
-c
+
 c  functional fit to high vn range
-c
-      shck=-9.0*avn+560.0
+
+      shck = -9.0d0 * avn + 560.0d0
+
       if(shob.gt.shck) then
          ierr=2
          return

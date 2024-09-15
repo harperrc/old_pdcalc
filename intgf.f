@@ -1,6 +1,8 @@
       subroutine intgf(z,r,x,f)
+
       include "real8.h"
       include "const.h"
+
       rx=r*x
       if(rx.gt.3.75)goto 111
 c
