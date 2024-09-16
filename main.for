@@ -2,12 +2,13 @@
 c
       character*132 dummy
 
-      id = 1
+      id = 0
 
       if (iargc().gt.0) then
          call getarg(1,dummy)
          read(dummy,*)id
       endif
+
 
       if (id.eq.1) then
          call drv1
@@ -15,6 +16,10 @@ c
          call drv2
       else if (id.eq.3) then
          call drv3
+      else if (id.eq.4) then
+         call drv4
+      else
+         write(6,*)'no driver ',id
       endif
 
       stop
@@ -22,3 +27,4 @@ c
       include 'drv1.x'
       include 'drv2.x'
       include 'drv3.x'
+      include 'drv4.x'

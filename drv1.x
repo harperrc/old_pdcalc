@@ -8,12 +8,13 @@ c  mode = 2
 c     read a files of ground range, hob, yld, vn, tgttype, k-factor 
 
       include "real8.h"
-      character fname*132,gname*132,jti*1,kfi*1,whichm*10,sq*1
-c
+      character fname*132,gname*132,jti*1,kfi*1,whichm*10,sq*1,
+     *  dummy*132
+
       include "basicd.h"
       include "const.h"
       include "files.h"
-c
+
       dimension pd(2)
 c
 c  cep   circular error probable for weapon (km)
@@ -42,28 +43,37 @@ c  mode  which read to use
 c  gamma reentry angle assumed 
 c  az    azimuth iin degrees from dgz to target
 c
-      namelist /simlst/ cep,r95,gname,ivns,ivne,ivnd,jti,kfi,iflg,
+      namelist /plst/ cep,r95,gname,ivns,ivne,ivnd,jti,kfi,iflg,
      *  mode,gamma,az
-c
+
       sq   = char(39)
 
       lin  =  1
       lout =  6
       ldbg = 62
       ldbg = -1
-c
+
       open (unit=lout,status='unknown',file='lout.out')
-c
+
       if((ldbg.gt.0).and.(ldbg.ne.lout)) then
          open (unit=ldbg,status='unknown',file='dbg.out')
       endif
-c
-      if(iargc().gt.0) then
-         call getarg(1,fname)
-         open (unit=lin,status='old',file=fname)
-      else
-         open (unit=lin,status='old',file='pdcalc.inp')
-      endif
+
+      fname = 'drv1.nml'
+
+      do iarg=1,iargc()
+         jarg = iarg + 1
+
+         call getarg(iarg,dummy)
+
+         dummy = dummy(1:lnblnk(dummy))
+
+         if (dummy.eq."-i") then
+            call getarg(jarg,fname)
+         endif
+      enddo
+
+      open (unit=lin,status='old',file=fname)
 
       call acon
 
@@ -85,8 +95,8 @@ c
 
       az     = 0.0d0
 
-      read(lin,simlst)
-      write(lout,simlst)
+      read(lin,nml=plst)
+      write(lout,nml=plst)
 
       close (unit=lin)
 
@@ -162,6 +172,10 @@ c  compute pd with and without cep effects
             xr95 = r95
          endif
 
+         d   = 0.0d0
+         wr  = 0.0d0
+         pod = 0.0d0
+
          call pdcalc(iv,jti,kfi,yld,hof,xr95,xcep,d,wr,pod,iflg,az)
 
          pd(j) = max(smalpk,pod)
@@ -205,6 +219,10 @@ c  if tgt flown to ground
 
       xr95 = zero
       xcep = zero
+
+      d   = 0.0d0
+      wr  = 0.0d0
+      pod = 0.0d0
 
       call pdcalc(iv,jti,kfi,yld,hof,xr95,xcep,d,wr,pod,iflg,az)
 

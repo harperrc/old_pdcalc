@@ -25,13 +25,13 @@ c
 
       dimension w(5),zp(5)
 
-      data w/0.0666713443d0,0.1494513492d0,0.2190863625d0,
-     *       0.2692667193d0,0.2955242247d0/
+      data w /0.0666713443d0 , 0.1494513492d0 , 0.2190863625d0 , 
+     *        0.2692667193d0 , 0.2955242247d0/
 
-      data zp/0.9739065285d0,0.8650633667d0,0.6794095683d0,
-     *        0.4333953941d0,0.1488743390d0/
+      data zp /0.9739065285d0 , 0.8650633667d0 , 0.6794095683d0 , 
+     *         0.4333953941d0 , 0.1488743390d0/
 
-      ierr=0
+      ierr = 0
 
       if(iflg.eq.6)d = zero
 
@@ -41,88 +41,94 @@ c
       rr5 = r95 * cnm2ft
 
       adcep = sqrt(cep * cep + 0.231d0 * rr5 * rr5)
-c
-      if(wr.le.0.001)goto 40
+  
+      if (wr.le.0.001d0)goto 40
 
 c  compute beta-factor used in computing z
 
  10   ex   = one - dsig * dsig
       beta = sqrt(-log(ex))
-c
-      if(adcep.gt.zero)goto 50
-c
+
+      if (adcep.gt.zero)goto 50
+
 c  compute pod when cep=r95=zero
-c
+
 c  if d = zero set pod = 0.999
-c
-      if(d.le.zero)goto 20
-c
-      z=(one/beta)*log(wr*ex/d)
-c
+
+      if (d.le.zero)goto 20
+
+      z = (one / beta) * log(wr * ex / d)
+
 c  if z >3.87 pod = 0.999.  if z is close to zero pod = 0.50
 c  if z < -3.87 pod = zero
-c
-      if(z.gt.3.87)goto 20
-      zab=abs(z)
-      if(zab.lt.5.0e-7)goto 30
-      if(z.lt.-3.87)goto 40
-c
+
+      if (z.gt.3.87d0)goto 20
+
+      zab = abs(z)
+
+      if (zab.lt.5.0d-7)goto 30
+      if (z.lt.(-3.87d0))goto 40
+
 c  pod = 0.50+0.50*abs(z)/z*erf(1)
-c
-      c=abs(z)/1.414213562
-c
-      c2=c*c
-      c3=c2*c
-      c4=c3*c
-      c5=c4*c
-      c6=c5*c
-c
-      erfu=one-one/((one+0.0705230784*c+0.0422820123*c2+
-     *  0.0092705272*c3+0.0001520143*c4+0.0002765672*c5+
-     *  0.0000430638*c6)**16)
-c
+
+      c = abs(z) / 1.414213562d0
+
+      c2 =  c * c
+      c3 = c2 * c
+      c4 = c3 * c
+      c5 = c4 * c
+      c6 = c5 * c
+
+      erfu = one - one /( (one + 0.0705230784d0 *  c + 
+     *                           0.0422820123d0 * c2 +
+     *                           0.0092705272d0 * c3 +
+     *                           0.0001520143d0 * c4 +
+     *                           0.0002765672d0 * c5 +
+     *                           0.0000430638d0 * c6)**16)
+
       if(z.lt.zero) then
-         pov=0.50-0.50*erfu
+         pov =0.50d0 - 0.50d0 * erfu
       else
-         pov=0.50+0.50*erfu
+         pov =0.50d0 + 0.50d0 * erfu
       endif
 c
       goto 120
 c
- 20   pov=0.999
+ 20   pov = 0.999d0
       goto 120
 c
- 30   pov=0.500
+ 30   pov = 0.500d0
       goto 130
 c
- 40   pov=zero
+ 40   pov = zero
       goto 130
-c
+
 c  normalize wr and d
-c
- 50   wrn=1.1774*wr/adcep
-      x  =1.1774*d/adcep
-c
+
+ 50   wrn = 1.1774d0 * wr / adcep
+      x   = 1.1774d0 * d / adcep
+
 c  fsum will sum terms of gaussian quadrature
-c
-      fsum=zero
-c
+
+      fsum = zero
+
 c  if dn - 4 < 0 begin integration with radius of zero otherwise at dt-4
+
+      xbb = 1.06d0 * wrn * exp(2.86d0 * dsig)
 c
-      xbb=1.06*wrn*exp(2.86*dsig)
+      xb  = x + 4.0d0
 c
-      xb=x+4.0
+      if(xbb.lt.xb)xb = xbb
 c
-      if(xbb.lt.xb)xb=xbb
-c
-      if(x.le.4.0) then
-         xa=zero
-         bplusa=xb
-         bminsa=xb
+      if(x.le.4.0d0) then
+         xa     = zero
+         bplusa = xb
+         bminsa = xb
       else
-         xa=x-4.0
-         bplusa=xa+xb
-         bminsa=xb-xa
+         xa     = x - 4.0d0
+         bplusa =xa + xb
+         bminsa =xb - xa
+
          if(bminsa.le.zero)goto 110
       endif
 c
@@ -131,22 +137,25 @@ c
 c
       do 100 n=1,5
 c
-      r1=(-bminsa*zp(n)+bplusa)/2.0
-      r2=( bminsa*zp(n)+bplusa)/2.0
+      r1 = (-bminsa * zp(n) + bplusa) / 2.0d0
+      r2 = ( bminsa * zp(n) + bplusa) / 2.0d0
 c
-      z1=betai*log(wrnx/r1)
-      z2=betai*log(wrnx/r2)
+      z1 = betai * log(wrnx / r1)
+      z2 = betai * log(wrnx / r2)
 c
       call intgf(z1,r1,x,f)
-      fsum=fsum+w(n)*f
-      if(z2.lt.-3.87)goto 100
+
+      fsum = fsum + w(n) * f
+      if(z2.lt.(-3.87d0))goto 100
+
       call intgf(z2,r2,x,f)
-      fsum=fsum+w(n)*f
+
+      fsum = fsum + w(n) * f
  100  continue
  110  continue
-c
-      pov=0.50*fsum*bminsa
-c
+
+      pov = 0.50d0 * fsum * bminsa
+
  120  if(iflg.eq.6)goto 140
       if(pov.le.0.99)goto 130
       if(iflg.eq.1)pov=0.99

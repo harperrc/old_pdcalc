@@ -1,5 +1,5 @@
       subroutine wrcalc(yld,hob1,iv,jjt,kf,dsig,wr,ierr)
-c
+
 c  compute weapon radius for p (overpressure) or q (dynamic pressure)
 c  targets
 c
@@ -16,13 +16,15 @@ c
 c  outputs:
 c        wr    weapon radius (feet)
 c        ierr  error status flag
+
       include "real8.h"
       include "const.h"
       include "files.h"
       include 'cdkwr.h'
 
-c  increased dim of wq1 from 72 to 80 and dropped wq2 array
-c  wq2 incorporated in wq1 array as modern compilers dont have limit on # of continuations 
+c  replaced equivalence statements with arrays setup as data statements
+c  used pgf77 to compile code and wrote the results of wp & wq out then
+c  reformatted with python to yield the data statements below (rch 09/09/24)
 
       dimension wp(8,2,10),wq(8,10),tvnp(9),tvnq(9)
 
@@ -146,70 +148,71 @@ c  wq2 incorporated in wq1 array as modern compilers dont have limit on # of con
      *  2.5129500d-09, 3.0062600d-09, 0.0000000d+00,-2.4470400d-09,
      * -7.2056200d-09,-8.7486600d-09/
 
-c
 c  yield limits for p targets
-c
-      data tvnp/54.,51.,34.,30.,27.,27.,22.,21.,20./
-c
+
+      data tvnp/54.0d0 , 51.0d0 , 34.0d0 , 30.0d0 , 27.0d0 , 
+     *          27.0d0 , 22.0d0 , 21.0d0 , 20.0d0/
+
 c  yield limits for q targets
-c
-      data tvnq/35.,35.,35.,31.,28.,26.,25.,23.,22./
-c
+
+      data tvnq/35.0d0 , 35.0d0 , 35.0d0 , 31.0d0 , 28.0d0 , 
+     *          26.0d0 , 25.0d0 , 23.0d0 , 22.0d0/
+
       ierr=0
-c
+
       if(kf.ge.10) then
          ierr=6
          return
       endif
-c
-      jt=jjt
-      vn=iv
-      fk=kf
-c
-      yldcu=yld**third
-      yldic=one/yldcu
-c
-      shob=hob1*yldic
-      ds2=one/(one-dsig*dsig)
-c
-      fk10=fk * 0.10
-c
-      sil=shob/100.0+1.0001
-      il=int(sil)
-      il=max(1,il)
-c
+
+      jt = jjt
+      vn = iv
+      fk = kf
+
+      yldcu = yld**third
+      yldic = one / yldcu
+
+      shob = hob1 * yldic
+      ds2  = one / (one - dsig * dsig)
+
+      fk10 = fk * 0.10d0
+
+      sil = shob / 100.0d0 + 1.0001d0
+      il  = int(sil)
+      il  = max(1,il)
+
       if(il.ge.10) then
-         ierr=3
+         ierr = 3
          return
       endif
-c
-      fac=(il-1)*100.0
-      fac=(shob-fac)/100.0
-c
+
+      fac = (il - 1) * 100.0d0
+      fac = (shob - fac) / 100.0d0
+
 c  check for p or q
-c
+
       if(jt.eq.1)goto 240
-c
+
 c  calculate the adjusted vn for q type targets
-c
-      r2=3.0
-c
- 10   r1=one-fk10*(one-2.7144176*yldic*(r2**third))
-      abdif=r1-r2
-      r2=r1
-      abdif=abs(abdif)
-      if(abdif.gt.0.001)goto 10
-c
-      avn=vn+2.742*log(r2)
-      ax=1.10
-c
+
+      r2 = 3.0d0
+
+ 10   r1    = one - fk10 * (one - 2.7144176d0 * yldic * (r2**third))
+      abdif = r1 - r2
+      r2    = r1
+      abdif = abs(abdif)
+      if(abdif.gt.0.001d0)goto 10
+
+      avn = vn + 2.742d0 * log(r2)
+      ax  = 1.10d0
+
 c  compute wr for q type targets
-c
+
       if(avn.gt.tvnq(il)) then
-         ierr=2
+         ierr = 2
          return
       endif
-c
+
       swrl=wq(1,il)+avn*(wq(2,il)+avn*(wq(3,il)+avn*(wq(4,il)+
      *  avn*(wq(5,il)+avn*(wq(6,il)+avn*(wq(7,il)+avn*wq(8,il)))))))
       ih=il+1
@@ -228,60 +231,63 @@ c  calculate the adjusted vn for p type targets
       if(abdif.gt.0.001)goto 11
 
       avn = vn + 5.485d0 * log(r2)
-      ax  = 1.04
+      ax  = 1.04d0
 
 c  compute wr for p type targets
 
       if(avn.gt.tvnp(il)) then
-         ierr=2
+         ierr = 2
          return
       endif
 
-      if(avn.lt.36.0)goto 260
+      if(avn.lt.36.0d0)goto 260
 
 c  functional fit to high vn range
 
       shck = -9.0d0 * avn + 560.0d0
 
       if(shob.gt.shck) then
-         ierr=2
+         ierr = 2
          return
       endif
-c
+
 c  calculate wr using the AIM fit
-c
-      vx=(avn-46.0)/10.0
-      wo=88.0-vx*(53.0-vx*(21.0-vx*8.0))
+
+      vx = (avn - 46.0d0) / 10.0d0
+      wo = 88.0d0 - vx * (53.0d0 - vx * (21.0d0 - vx * 8.0d0))
+
       if(shob.ne.zero)goto 259
-c
-      wr=wo*yldcu*ds2/ax
+
+      wr = wo * yldcu * ds2 / ax
       goto 400
-c
- 259  hm=70.0-5.0*vx*(7.0-vx)
-      con=1.6+0.20*vx
-      hx=shob/hm
-      dw=hm-wo
-      wr=wo+dw*hx*(2.0-hx-con*(one-hx)**2)
-      wr=wr*yldcu*ds2/ax
+
+ 259  hm   = 70.0d0 - 5.0d0 * vx * (7.0d0 - vx)
+      con  = 1.60d0 + 0.20d0 * vx
+      hx   = shob / hm
+      dw   = hm - wo
+      wr   = wo + dw * hx * (2.0d0 - hx - con * (one - hx)**2)
+      wr   = wr * yldcu * ds2 / ax
       goto 400
-c
+
 c  use the table data
-c
+
  260  j=1
-      if(avn.gt.7.5)j=2
+      if(avn.gt.7.5d0)j=2
+
       swrl=wp(1,j,il)+avn*(wp(2,j,il)+avn*(wp(3,j,il)+avn*(wp(4,j,il)+
      *  avn*(wp(5,j,il)+avn*(wp(6,j,il)+avn*(wp(7,j,il)+avn*wp(8,j,il))
      *  )))))
+
       ih=il+1
       swrh=wp(1,j,ih)+avn*(wp(2,j,ih)+avn*(wp(3,j,ih)+avn*(wp(4,j,ih)+
      *  avn*(wp(5,j,ih)+avn*(wp(6,j,ih)+avn*(wp(7,j,ih)+avn*wp(8,j,ih))
      *  )))))
-c
- 300  swrl=exp(swrl)
-      swrh=exp(swrh)
-      wr=(swrl+fac*(swrh-swrl))*yldcu*ds2/ax
-c
+
+ 300  swrl = exp(swrl)
+      swrh = exp(swrh)
+      wr   = (swrl + fac * (swrh - swrl)) * yldcu * ds2 / ax
+
  400  if(wr.lt.zero)wr=zero
-c
+
       return
       end

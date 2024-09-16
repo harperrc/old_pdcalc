@@ -1,0 +1,9 @@
+ &plst
+  cep=1.0,
+  r95=5.0,
+  jti='p',
+  ivns=1,
+  ivne=23,
+  ivnd=1,
+  gname='gd.dat'
+ &end

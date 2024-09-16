@@ -1,9 +1,147 @@
-main <drivernumber
+N.B. i have discovered that you need to zero out d,wr and pod prior to
+calling pdcalc with option 2 otherwise it will return the last 'good'
+value if it computes a zero
+
+--------------------------------------------------------------------------------------
+
+for each driver there is a namelist that controls some of the parameters
+the default name is drvX.nml where X = 1,2,3,4....
+
+main <drivernumber> to run with the default file
+
+main <drivernumber> -i filename to use an alternate namelist file
+
+--------------------------------------------------------------------------------------
 
 e.g. to run the code reading the gd.dat file
 main 1
 
+    drv1.x is the driver for this option
+
+    namelist parameters are:
+
+c  cep   circular error probable for weapon (km)
+c  r95   95% of damage radius lies within this area (km)
+c  gname file name containing ground range, altitude and yield data
+c  ivns  starting vn #
+c  ivne  ending vn #
+c  ivnd  step in vn #
+c  jti   target type
+c  kfi   k-factor
+c  iflg  1 product pod up to value of 0.990, d must be input
+c        2 product pod up to value of 0.999, d must be input
+c        3 see 4
+c        4 produce weapon radius
+c        5 see 6
+c        6 produce d, maximum distance at which a give pod
+c          can be acheived, pod must be input
+c        7 produce fatality pod and casualty pod
+c          returned in pod & wr, d must be input
+c        8 damage sigma is input through pod variable pod is
+c          output, d is input
+c        9 damage sigma and weapon radius are input, pod is
+c          output, d is input
+c       10  wr input, pod is output, d is input
+c  mode  which read to use
+c        1 = grn,hob,yld
+c            grn = ground range (ft)
+c            hob = height of burst (ft)
+c            yld = yield (Kt)
+c         2 = grn,hob,yld,iv,jti,kfi
+c            grn = ground range (ft)
+c            hob = height of burst (ft)
+c            yld = yield (Kt)
+c            iv  = vulnerability number
+c            jti = type (e.g. 'p','q',....) N.B. MUST BE LOWER CASE
+c            kfi = vulnerability number k-factor
+c  gamma reentry angle assumed 
+c  az    azimuth iin degrees from dgz to target
+
+--------------------------------------------------------------------------------------
+
 main 2 exercises the code across some vn, kf
+
+    drv2.x is the driver for this option
+
+    namelist parameters are:
+
+c  hobi  height of burst for evaluation (ft)
+c  cep   circular error probable for weapon (km)
+c  r95   95% of damage radius lies within this area (km)
+c  gname file name containing ground range, altitude and yield data
+c  ivnb  starting vn #
+c  ivne  ending vn #
+c  ivns  step in vn #
+c  jti   target type
+c  kfb   k-factor begin value (typically 0)
+c        the end value will be min(ivn-1,9)
+c  kfs   k-factor step (typicall 1)
+c  az    azimuth iin degrees from dgz to target
+
+--------------------------------------------------------------------------------------
 
 main 3 reads a reformatted version of your OPEN-RISOP file (my name is good)
 and computes pod with a yield of 300kt and a cep or 3 nmi
+
+    drv3.x is the driver for this option
+
+    namelist parameters are:
+
+c  yld   yield (kt)
+c  hobi  height of burst for evaluation (ft)
+c  cep   circular error probable for weapon (km)
+c  fname name of reformatted RISOP file
+
+c        fields (can be read free format since no character data)
+c           line,catcode,xlat,xlon,hgt,r95,vntk,ivn,jti,kfi
+
+c                  line   line # in file (usefull to reference back to original file)
+c                  xlat   latitude (deg)
+c                  xlon   longtude (deg)
+c                  hgt    height (ft)
+c                  r95    95 % damage radius (km)
+c                  vntk   full vntk (e.g. 10P0)
+c                  ivn    vn number portion only
+c                  jti    type (e.g. p,q,r....) N.B. MUST BE LOWER CASE
+c                  kfi    k-factor
+
+--------------------------------------------------------------------------------------
+
+main 4 reads a list of available vn number with associated cep and
+       a file of icbm parameters and then loops over height of burst
+       to determine pod
+
+    drv4.x is the driver for this option
+
+    namelist parameters are:
+
+
+c  iname  filename containing icbm information
+c         this file requires a strict format as follows
+c                a22,1x,a20,1x,i5,1x,i5,1x,f12.5,1x,f12.5,1x,f12.5,1x,i3
+c         fields
+c                 tnato,tussr,nsoft,nhard,yld,rmax,cep,numwh
+
+c                 tnato  NATO name for missile
+c                 tussr  USSR name for missile
+c                 nsoft  # of missiles in/on soft launchers (future use)
+c                 hnard  # of missiles in/on hard launchers (future use)
+c                 yld    yield (Kt)
+c                 rmax   maximum range (km) (future use)
+c                 cep    cep of missile (ft)
+c                 numwh  # of warheads of this type/missile (future use)
+c  tname  filename containing the target types, r95, vntk broken down
+c         this file requires a strict format as follows
+c               i5,1x,a20,1x,f17.5,1x,i2,1x,a,1x,a
+c         fields
+c                num,akey,r95,ivn,jtinp,kfi
+
+c                num   line # from original file
+c                akey  VNTK-R95 (used as key in python reformatting code)
+c                ivn   VN portion
+c                jtinp target type (note here this is in caps and code will convert to lowercase)
+c                kfi   k-factor
+
+c  hob0   starting hob (ft)
+c  hob1   ending hob (ft)
+c  dhob   hob step size (ft)

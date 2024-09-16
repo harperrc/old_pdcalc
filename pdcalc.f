@@ -52,8 +52,6 @@ c
       character*1 jt,kft,kfi,jti,kfn,jtd
       include "const.h"
       include "files.h"
-c
-      save
 
       dimension ddsig(19),jjtd(19),kfn(27),kff(27),jtd(19)
 
@@ -72,146 +70,150 @@ c
       data kff/ 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 1 , 2 ,
      *   3 , 4 , 5 , 6 , 7 , 8 , 9 , 10, 11, 12, 13, 14, 15, 16, 17/
 
+      p1 = 0.0d0
+
 c  convert to lower case
 
       ich=ichar(jti)
-      if(ich.gt.64.and.ich.le.90) then
+
+      if (ich.gt.64.and.ich.le.90) then
          jt=char(ichar(jti)+32)
       else
          jt=jti
       endif
 
       ich=ichar(kfi)
-      if(ich.gt.64.and.ich.le.90) then
-         kft=char(ichar(kfi)+32)
+      if (ich.gt.64.and.ich.le.90) then
+         kft = char(ichar(kfi)+32)
       else
-         kft=kfi
+         kft = kfi
       endif
 
 c  get target type
 
       do i=1,19
-         if(jt.eq.jtd(i)) then
-            jjt=jjtd(i)
-            dsig=ddsig(i)
+         if (jt.eq.jtd(i)) then
+            jjt  = jjtd(i)
+            dsig = ddsig(i)
             goto 10
          endif
       enddo
 
-      ierr=9
+      ierr = 9
       goto 990
 
 c  get kf (numeric)
 
  10   do i=1,27
-         if(kft.eq.kfn(i)) then
-            kf=kff(i)
+         if (kft.eq.kfn(i)) then
+            kf = kff(i)
             goto 11
          endif
       enddo
 
-      ierr=9
+      ierr = 9
       goto 990
 
- 11   ifhflg=0
-      ifgflg=0
+ 11   ifhflg = 0
+      ifgflg = 0
 
       iflg=iiflg
 
-      if(iflg.gt.1000)ifhflg=1
-      if(iflg.gt.1000)iflg=iflg-1000
-      if(iflg.gt.100)ifgflg=1
-      if(iflg.gt.100)iflg=iflg-100
-      if(iflg.eq.3)iflg=4
-      if(iflg.eq.5)iflg=6
+      if (iflg.gt.1000)ifhflg = 1
+      if (iflg.gt.1000)iflg = iflg - 1000
+      if (iflg.gt.100)ifgflg = 1
+      if (iflg.gt.100)iflg = iflg - 100
+      if (iflg.eq.3)iflg = 4
+      if (iflg.eq.5)iflg = 6
 
       iflh=iflg
 
 c  iflg of 7 must have a 'x' vntk
 
-      if(iflg.ne.7)goto 14
+      if (iflg.ne.7)goto 14
 
 c  'x' vn number
 
-      if(jjt.eq.3)goto 100
+      if (jjt.eq.3)goto 100
 
-      ierr=5
+      ierr = 5
       goto 990
 
- 14   if(jjt.gt.2)goto 100
+ 14   if (jjt.gt.2)goto 100
 
 c  overpressure, dynamic pressure and crater type vn's
 
- 15   if(iflg.eq.8.or.iflg.eq.9)dsig=pod
-      if(iflg.ge.9)goto 20
+ 15   if (iflg.eq.8.or.iflg.eq.9)dsig=pod
+      if (iflg.ge.9)goto 20
 
       call wrcalc(yld,hob1,iv,jjt,kf,dsig,wr,ierr)
-      if(ierr.ne.0)goto 990
 
- 19   if(iflg.ne.4)goto 20
-      pod=zero
+      if (ierr.ne.0)goto 990
+
+ 19   if (iflg.ne.4)goto 20
+      pod = zero
       return
 
  20   call lncalc(cep,dsig,wr,r95,pod,d,iflh,ierr)
-      if(ierr.ne.0)goto 990
+      if (ierr.ne.0)goto 990
       return
 
- 100  if(jjt.le.4)goto 200
+ 100  if (jjt.le.4)goto 200
 
 c  eta type vntk
 
-      if(iflg.le.2)goto 110
+      if (iflg.le.2)goto 110
 
-      ierr=4
+      ierr = 4
       goto 990
 
- 110  jts=jjt-4
+ 110  jts = jjt - 4
 
       call etcalc(iv,jts,kf,yld,cep,hob1,r95,azmth,d,pod,wr,ierr)
-      if(ierr.ne.0)goto 990
+
+      if (ierr.ne.0)goto 990
+
       return
 
 c  check for and process 'x', 'y', and 'z' type vntk
 
- 200  if(jt.ne.'z')goto 210
+ 200  if (jt.ne.'z')goto 210
       jjt=1
 
-      if(hob1.le.0.99)goto 15
+      if (hob1.le.0.99)goto 15
 
       ierr=10
       goto 990
 
- 210  if(jt.eq.'x')goto 225
-      if(hob1.le.0.99)goto 220
+ 210  if (jt.eq.'x')goto 225
+      if (hob1.le.0.99)goto 220
 
  220  call wrclcy(kf,yld,wr,ierr)
-      if(ierr.eq.0)goto 19
+      if (ierr.eq.0)goto 19
 
 c  invalid jt='y' vntk; set pod,wr and or d to zero and return
 
-      if(iflg.eq.6)d=zero
-      if(iflg.ne.9.and.iflg.ne.10)wr=zero
-      if(iflg.ne.6)pod=zero
+      if (iflg.eq.6)d=zero
+      if (iflg.ne.9.and.iflg.ne.10)wr=zero
+      if (iflg.ne.6)pod=zero
       return
 
  225  iflh=2
-      if(iflg.ne.7)goto 230
+      if (iflg.ne.7)goto 230
       kk=kf/2*2
-      if(kf.ne.kk)goto 230
+      if (kf.ne.kk)goto 230
       ierr=11
       goto 990
 
  230  call wrpers(yld,hob1,iv,jjt,kf,dsig,wr,ierr)
-      if(ierr.ne.0)goto 990
-      if(iflg.eq.4)return
+      if (ierr.ne.0)goto 990
+      if (iflg.eq.4)return
 
-      write(6,*)'at 230 call lncalc'
-      call flush(6)
       call lncalc(cep,dsig,wr,r95,pod,d,iflh,ierr)
-      if(ierr.ne.0)goto 990
-      if(iflg.ne.7)return
+      if (ierr.ne.0)goto 990
+      if (iflg.ne.7)return
 
-      if(kf/2*2.eq.kf)goto 231
+      if (kf/2*2.eq.kf)goto 231
       p1=pod
       kf=kf+1
       goto 230
@@ -220,15 +222,15 @@ c  invalid jt='y' vntk; set pod,wr and or d to zero and return
       pod=p1
       return
 
- 990  if(ifhflg.eq.1.and.ierr.eq.10)goto 991
-      if(ifgflg.eq.1.and.ierr.eq.2)goto 991
+ 990  if (ifhflg.eq.1.and.ierr.eq.10)goto 991
+      if (ifgflg.eq.1.and.ierr.eq.2)goto 991
 
       call errmsg(ierr,iv,jjt,kf,yld,cep,hob1,r95,d,wr,pod,iflg)
       return
 
- 991  if(iflg.eq.5.or.iflg.eq.6)d=zero
-      if(iflg.ne.9.and.iflg.ne.10)wr=zero
-      if(iflg.ne.3.and.iflg.ne.6)pod=zero
+ 991  if (iflg.eq.5.or.iflg.eq.6)d=zero
+      if (iflg.ne.9.and.iflg.ne.10)wr=zero
+      if (iflg.ne.3.and.iflg.ne.6)pod=zero
 
       return
       end
