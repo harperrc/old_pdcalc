@@ -1,10 +1,13 @@
       subroutine acon
 
       include "real8.h"
+      include "cdkpd.h"
       include "const.h"
       include "files.h"
 
       namelist /conlst/ re,we,g0,ttol
+
+      ncall = 0
 c
 c  initialize data
 c

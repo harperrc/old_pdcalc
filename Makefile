@@ -2,10 +2,13 @@ PROGRAM=	main
 
 OBJECTS=	main.o \
 		acon.o \
+		dypres.o \
 		errmsg.o \
 		etcalc.o \
 		intgf.o \
 		lncalc.o \
+		ogh.o \
+		overp.o \
 		pdcalc.o \
 		ranf.o \
 		wrcalc.o \
@@ -28,10 +31,13 @@ $(PROGRAM):	$(OBJECTS)
 
 main.o:	main.for\
 	acon.f \
+	dypres.f \
 	errmsg.f \
 	etcalc.f \
 	intgf.f \
 	lncalc.f \
+	ogh.f \
+	overp.f \
 	pdcalc.f \
 	ranf.f \
 	wrcalc.f \
@@ -41,10 +47,22 @@ main.o:	main.for\
 	drv1.x \
 	drv2.x \
 	drv3.x \
-	drv4.x
+	drv4.x \
+	drv5.x \
+	drv6.x \
+	drv7.x \
+	drv8.x
 	$(F77) $(INCLUDES) $(FLAGS) -c $<
 
+lib:	$(OBJECTS)
+	ar rv libpd.a $(OBJECTS)
+	ranlib libpd.a
+
 acon.o:	acon.f
+	$(F77) $(INCLUDES) $(FLAGS) -c $<
+
+dypres.o:	dypres.f \
+	real8.h
 	$(F77) $(INCLUDES) $(FLAGS) -c $<
 
 errmsg.o:	errmsg.f
@@ -57,6 +75,14 @@ intgf.o:	intgf.f
 	$(F77) $(INCLUDES) $(FLAGS) -c $<
 
 lncalc.o:	lncalc.f
+	$(F77) $(INCLUDES) $(FLAGS) -c $<
+
+ogh.o:	ogh.f \
+	cdkpd.h cdkwr.h
+	$(F77) $(INCLUDES) $(FLAGS) -c $<
+
+overp.o:	overp.f\
+	real8.h
 	$(F77) $(INCLUDES) $(FLAGS) -c $<
 
 pdcalc.o:	pdcalc.f
@@ -79,6 +105,5 @@ wrcrtr.o:	wrcrtr.f
 wrpers.o:	wrpers.f
 	$(F77) $(INCLUDES) $(FLAGS) -c $<
 
-
 clean:
-	rm *.o $(PROGRAM)
+	rm *.o $(PROGRAM) libpd.a

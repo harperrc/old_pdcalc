@@ -1,1 +1,1 @@
-      common /cdkwr/ avn
+      common /cdkwr/ avn,shck

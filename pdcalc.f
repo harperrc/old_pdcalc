@@ -50,25 +50,32 @@ c   azmth   azimuth in degrees from dgz to target
 c              
       include "real8.h"
       character*1 jt,kft,kfi,jti,kfn,jtd
+      include 'cdkpd.h'
       include "const.h"
       include "files.h"
 
       dimension ddsig(19),jjtd(19),kfn(27),kff(27),jtd(19)
 
-      data jtd  /'r','s','q','t','u','l','p','m','n','o',
-     *           'z','y','a','b','c','d','e','f','x'/
+      data jtd  /   'r',   's',   'q',   't',   'u',   'l',   'p',
+     *              'm',   'n',   'o',   'z',   'y',   'a',   'b',
+     *              'c',   'd',   'e',   'f',   'x'/
 
-      data jjtd/  2 , 2 , 2 , 2 , 2 , 1 , 1 , 1 , 1 , 1,
-     *            4 , 4 , 5 , 6 , 7 , 8 , 9 ,10 , 3/
+      data jjtd /    2 ,    2 ,    2 ,    2 ,    2 ,    1 ,    1 , 
+     *               1 ,    1 ,    1 ,    4 ,    4 ,    5 ,    6 , 
+     *               7 ,    8 ,    9 ,   10 ,    3/
 
-      data ddsig/.1 , .2, .3, .4, .5, .1, .2, .3, .4, .5,
-     *           .3 , .3, 1., 1., 1., 1., 1., 1., 1./
+      data ddsig /0.1d0, 0.2d0, 0.3d0, 0.4d0, 0.5d0, 0.1d0, 0.2d0, 
+     *            0.3d0, 0.4d0, 0.5d0, 0.3d0, 0.3d0, 10.d0, 10.d0, 
+     *            10.d0, 10.d0, 10.d0, 10.d0, 10.0d0/
 
-      data kfn/'0','1','2','3','4','5','6','7','8','9','a','b',
-     *  'c','d','e','f','g','h','i','j','k','l','m','n','o','p','q'/
+      data kfn /'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 
+     *          'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 
+     *          'k', 'l', 'm', 'n', 'o', 'p', 'q'/
 
-      data kff/ 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 1 , 2 ,
+      data kff / 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 1 , 2 ,
      *   3 , 4 , 5 , 6 , 7 , 8 , 9 , 10, 11, 12, 13, 14, 15, 16, 17/
+
+      ncall = ncall + 1
 
       p1 = 0.0d0
 
@@ -119,14 +126,20 @@ c  get kf (numeric)
 
       iflg=iiflg
 
-      if (iflg.gt.1000)ifhflg = 1
-      if (iflg.gt.1000)iflg = iflg - 1000
-      if (iflg.gt.100)ifgflg = 1
-      if (iflg.gt.100)iflg = iflg - 100
+      if (iflg.gt.1000) then
+         ifhflg = 1
+         iflg   = iflg - 1000
+      endif
+
+      if (iflg.gt.100) then
+         ifgflg = 1
+         iflg   = iflg - 100
+      endif
+
       if (iflg.eq.3)iflg = 4
       if (iflg.eq.5)iflg = 6
 
-      iflh=iflg
+      iflh = iflg
 
 c  iflg of 7 must have a 'x' vntk
 
@@ -143,7 +156,7 @@ c  'x' vn number
 
 c  overpressure, dynamic pressure and crater type vn's
 
- 15   if (iflg.eq.8.or.iflg.eq.9)dsig=pod
+ 15   if (iflg.eq.8.or.iflg.eq.9)dsig = pod
       if (iflg.ge.9)goto 20
 
       call wrcalc(yld,hob1,iv,jjt,kf,dsig,wr,ierr)
@@ -155,7 +168,9 @@ c  overpressure, dynamic pressure and crater type vn's
       return
 
  20   call lncalc(cep,dsig,wr,r95,pod,d,iflh,ierr)
+
       if (ierr.ne.0)goto 990
+
       return
 
  100  if (jjt.le.4)goto 200
@@ -180,46 +195,51 @@ c  check for and process 'x', 'y', and 'z' type vntk
  200  if (jt.ne.'z')goto 210
       jjt=1
 
-      if (hob1.le.0.99)goto 15
+      if (hob1.le.0.99d0)goto 15
 
-      ierr=10
+      ierr = 10
       goto 990
 
  210  if (jt.eq.'x')goto 225
-      if (hob1.le.0.99)goto 220
+      if (hob1.le.0.99d0)goto 220
 
  220  call wrclcy(kf,yld,wr,ierr)
       if (ierr.eq.0)goto 19
 
 c  invalid jt='y' vntk; set pod,wr and or d to zero and return
 
-      if (iflg.eq.6)d=zero
-      if (iflg.ne.9.and.iflg.ne.10)wr=zero
-      if (iflg.ne.6)pod=zero
+      if (iflg.eq.6)d = zero
+      if (iflg.ne.9.and.iflg.ne.10)wr = zero
+      if (iflg.ne.6)pod = zero
       return
 
- 225  iflh=2
+ 225  iflh = 2
       if (iflg.ne.7)goto 230
-      kk=kf/2*2
+      kk = kf / 2 * 2
       if (kf.ne.kk)goto 230
-      ierr=11
+      ierr = 11
       goto 990
 
- 230  call wrpers(yld,hob1,iv,jjt,kf,dsig,wr,ierr)
+ 230  call wrpers(yld,hob1,kf,dsig,wr,ierr)
+
       if (ierr.ne.0)goto 990
       if (iflg.eq.4)return
 
       call lncalc(cep,dsig,wr,r95,pod,d,iflh,ierr)
+
       if (ierr.ne.0)goto 990
       if (iflg.ne.7)return
 
       if (kf/2*2.eq.kf)goto 231
-      p1=pod
-      kf=kf+1
+
+      p1 = pod
+      kf = kf + 1
+
       goto 230
 
- 231  wr=pod
-      pod=p1
+ 231  wr  = pod
+      pod = p1
+
       return
 
  990  if (ifhflg.eq.1.and.ierr.eq.10)goto 991
@@ -228,9 +248,9 @@ c  invalid jt='y' vntk; set pod,wr and or d to zero and return
       call errmsg(ierr,iv,jjt,kf,yld,cep,hob1,r95,d,wr,pod,iflg)
       return
 
- 991  if (iflg.eq.5.or.iflg.eq.6)d=zero
-      if (iflg.ne.9.and.iflg.ne.10)wr=zero
-      if (iflg.ne.3.and.iflg.ne.6)pod=zero
+ 991  if (iflg.eq.5.or.iflg.eq.6)d    = zero
+      if (iflg.ne.9.and.iflg.ne.10)wr = zero
+      if (iflg.ne.3.and.iflg.ne.6)pod = zero
 
       return
       end

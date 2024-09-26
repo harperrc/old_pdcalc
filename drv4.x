@@ -36,6 +36,7 @@ c                num,akey,r95,ivn,jtinp,kfi
 
 c                num   line # from original file
 c                akey  VNTK-R95 (used as key in python reformatting code)
+c                r95   diameter of target (nmi)
 c                ivn   VN portion
 c                jtinp target type (note here this is in caps and code will convert to lowercase)
 c                kfi   k-factor

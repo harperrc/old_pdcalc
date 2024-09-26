@@ -1,9 +1,22 @@
+PDCALC from 1976
+
+replaced equivalence statements by combining all data since modern 
+FORTRAN allows for more than 19 continuation lines
+
+made code a little easier to read (added spaces.....)
+entire code is not double precision (including all data statements)
+
+added Speicher & Brode routines for Peak Dynamic pressure and Peak Overpressure
+added routine to find 'optimum' HOB/GR given weapon and target characteristics
+
+Makefile builds code with make, the make lib builds libpd.a that can then be
+linked with other codes
+
 N.B. i have discovered that you need to zero out d,wr and pod prior to
 calling pdcalc with option 2 otherwise it will return the last 'good'
 value if it computes a zero
 
 --------------------------------------------------------------------------------------
-
 for each driver there is a namelist that controls some of the parameters
 the default name is drvX.nml where X = 1,2,3,4....
 

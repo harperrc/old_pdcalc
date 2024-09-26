@@ -20,7 +20,7 @@ c        the end value will be min(ivn-1,9)
 c  kfs   k-factor step (typicall 1)
 c  az    azimuth iin degrees from dgz to target
 
-      namelist /plst/ivnb,ivne,ivns,jti,kfb,kfs,yld,hobi,r95,cep,az
+      namelist /plst/ ivnb,ivne,ivns,jti,kfb,kfs,yld,hobi,r95,cep,az
 
       lin  =  1
       lout =  6
