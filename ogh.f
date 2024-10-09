@@ -20,7 +20,8 @@ c  uses ridders method (chapter 9.2 of numerical recipies) in offset
       ofmax = 2.0d0 * hbmax
 
       ohob = -1.0d0
-      ogrn = -1.0e0
+      ogrn = -1.0d0
+      opod = -1.0d0
 
 c  step size in height of burst
 
@@ -147,9 +148,10 @@ c  fl positive
 
 c  keep up with largest ground range and associated height of burst
 
- 103     if (rtflsp.ge.ogrn) then
+ 103     if (rtflsp.ge.ogrn.and.hob.ge.ohob.and.podd.ge.opod) then
             ogrn = rtflsp
             ohob = hob
+            opod = podd
          endif
 
  104     hob = hob + dhob
