@@ -8,6 +8,7 @@ c equations from psr report 1419_3 for peak horizontal dynamic pressure
 
       include 'real8.h'
       double precision i,i1,j,j1,k,k1,l,l1,m
+      include 'sab.h'
 
       yld    = yld_
       yld13  = yld**0.33333333333333d0
@@ -33,6 +34,8 @@ c  convert to kft
       e = min(150.0d0,max(-150.0d0,e))
 
       qs = (a * r**d) / (1.0 + b * r**e) + c / r**f
+
+      qs_em = qs
 
       if (x.ge.xq) then
          dypres = qs

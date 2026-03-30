@@ -7,6 +7,7 @@
       include "files.h"
       include 'cdkwr.h'
       include 'cdkpd.h'
+      include 'sab.h'
 
       namelist /lst9/ ivn,jti,kfi,yld,cep,r95,az,iflg,
      *   hob0,dhob,hobmx,gr0,dgr,grmx,pkmax
@@ -14,7 +15,7 @@
       lin  =  1
       lout =  6
       ldbg = 62
-      ldbg = -1
+      ldbg = 77
 
       call acon
 
@@ -60,9 +61,10 @@
       dummy = adjustl(dummy)
       open(unit=4,status='unknown',file=dummy)
 
-      gr0  = gr0 / cnm2ft
-      dgr  = dgr / cnm2ft
-      grmx = grmx / cnm2ft
+      gr0   = gr0 / cnm2ft
+      dgr   = dgr / cnm2ft
+      grmx  = grmx / cnm2ft
+      hobmx = 900.0d0 * yld**0.33333333333333333333d0
 
       grndmax = 0.0d0
       hobmax  = 0.0d0
@@ -89,17 +91,21 @@ c  impose limits to keep dypres & overp from blowing up
             grft = max(1.0d-8,gr * cnm2ft)
             hobft = max(1.0d-8,hob)
 
+       pres = 0.0
             if (jti.eq.'q') then
                pres = dypres(grft,hobft,yld)
+               pres_em = qs_em
             else if (jti.eq.'p') then
                pres = overp(grft,hobft,yld)
+               pres_em = pres
             else
                pres = 0.0
+               pres_em = pres
             endif
 
             pres = min(1.0d5,pres)
 
-            write(2,10)hobkm,grkm,wrkm,pod,pres
+            write(2,10)hobkm,grkm,wrkm,pod,pres,pres_em
 
             if (pod.ge.pkmax) then
                if (grkm.ge.grndmax) then
@@ -124,8 +130,10 @@ c  impose limits to keep dypres & overp from blowing up
       grft = grndmax * 3280.8d0
       hbft = hobmax  * 3280.8d0
 
-      write(6,40)'ovp = ',overp(grft,hbft,yld)
-      write(6,40)'dyp = ',dypres(grft,hbft,yld)
+      ovp = overp(grft,hbft,yld)
+      dyp = dypres(grft,hbft,yld)
+      write(6,40)'ovp = ',ovp
+      write(6,40)'dyp = ',dyp,qs_em
       write(6,*)''
 
       gr0  = gr0 * cnm2ft
@@ -139,7 +147,7 @@ c  impose limits to keep dypres & overp from blowing up
  222  close (unit=1)
 
       stop
- 10   format(4(1x,f15.5),1x,1pe12.3)
+ 10   format(4(1x,f15.5),2(1x,1pe12.3))
  20   format('gr =',1x,f10.3,1x,
      *       'hob =',1x,f10.3,1x,
      *       a)
@@ -148,6 +156,6 @@ c  impose limits to keep dypres & overp from blowing up
      *       'T   =',1x,a,1x,
      *       'K   =',1x,a,1x,
      *       'Adj VN =',1x,f10.3)
- 40   format(a,1x,f10.3)
+ 40   format(a,2(1x,f10.3))
  50   format(i4,'-'i2,a,a,'.',a)
       end
