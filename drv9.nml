@@ -1,0 +1,16 @@
+ &lst9
+  yld = 100.0,
+  ivn = 13,jti='q',kfi='7'
+ &end
+ &lst9
+  yld = 250.0,
+  ivn = 13,jti='q',kfi='7'
+ &end
+ &lst9
+  yld = 100.0,
+  ivn = 21,jti='q',kfi='9'
+ &end
+ &lst9
+  yld = 250.0,
+  ivn = 21,jti='q',kfi='9'
+ &end

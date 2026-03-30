@@ -2,6 +2,7 @@ PROGRAM=	main
 
 OBJECTS=	main.o \
 		acon.o \
+		dpcoeff.o \
 		dypres.o \
 		errmsg.o \
 		etcalc.o \
@@ -51,7 +52,8 @@ main.o:	main.for\
 	drv5.x \
 	drv6.x \
 	drv7.x \
-	drv8.x
+	drv8.x \
+	drv9.x
 	$(F77) $(INCLUDES) $(FLAGS) -c $<
 
 lib:	$(OBJECTS)
@@ -61,7 +63,11 @@ lib:	$(OBJECTS)
 acon.o:	acon.f
 	$(F77) $(INCLUDES) $(FLAGS) -c $<
 
-dypres.o:	dypres.f \
+dpcoeff.o:	dpcoeff.f \
+	real8.h
+	$(F77) $(INCLUDES) $(FLAGS) -c $<
+
+dypres.o:	dypres.f dpcoeff.f\
 	real8.h
 	$(F77) $(INCLUDES) $(FLAGS) -c $<
 
